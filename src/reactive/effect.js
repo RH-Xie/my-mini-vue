@@ -1,13 +1,16 @@
+const effectStack = [];
 let activeEffect;
 export function effect(fn) {
     const effectFn = () => {
         // 处理用户代码的错误
         try {
             activeEffect = effectFn;
+            effectStack.push(activeEffect);
             return fn();
         } finally {
             // 执行完后需要还原，将其释放，防止调取到上一次的引用
-            activeEffect = undefined;
+            effectStack.pop();
+            activeEffect = effectStack[effectStack.length - 1];
         }
     };
     effectFn();
