@@ -1,0 +1,40 @@
+let activeEffect;
+
+export function effect(fn) {
+    const effectFn = () => {
+        // 处理用户代码的错误
+        try {
+            activeEffect = effectFn;
+            return fn();
+        } finally {
+            // 执行完后需要还原，将其释放，防止调取到上一次的引用
+            activeEffect = undefined;
+        }
+    };
+    effectFn();
+    return effectFn;
+}
+const targetMap = new WeakMap();
+export function track(target, key) {
+    if (!activeEffect) return;
+    let depsMap = targetMap.get(target);
+    if (!depsMap) {
+        targetMap.set(target, (depsMap = new Map()));
+    }
+    let deps = depsMap.get(key);
+    if (!deps) {
+        depsMap.set(key, (deps = new Set()));
+    }
+    deps.add(activeEffect);
+}
+
+export function trigger(target, key) {
+    const depsMap = targetMap.get(target);
+    // 没有被副作用所依赖，不处理
+    if (!depsMap) return;
+    const deps = depsMap.get(key);
+    if (!deps) return;
+    deps.forEach((effectFn) => {
+        effectFn();
+    });
+}
