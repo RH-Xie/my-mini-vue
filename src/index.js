@@ -7,7 +7,7 @@ const observed = (window.observed = reactive({
 }));
 effect(() => {
     effect(() => {
-        console.log("count2 activeEffect <", activeEffect);
+        console.log("count2 activeEffect ", activeEffect);
         console.log("count2 is :", observed.count2);
         console.log("count2 activeEffect >", activeEffect);
     });
