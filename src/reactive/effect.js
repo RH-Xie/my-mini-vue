@@ -1,15 +1,12 @@
-export let activeEffect;
-
+let activeEffect;
 export function effect(fn) {
     const effectFn = () => {
         // 处理用户代码的错误
         try {
             activeEffect = effectFn;
-            console.log("inner try", activeEffect);
             return fn();
         } finally {
             // 执行完后需要还原，将其释放，防止调取到上一次的引用
-            console.log("inner finally", activeEffect);
             activeEffect = undefined;
         }
     };

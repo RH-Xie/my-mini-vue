@@ -1,4 +1,4 @@
-import { activeEffect, effect } from "./reactive/effect";
+import { effect } from "./reactive/effect";
 import { reactive } from "./reactive/reactive";
 
 const observed = (window.observed = reactive({
@@ -7,11 +7,7 @@ const observed = (window.observed = reactive({
 }));
 effect(() => {
     effect(() => {
-        console.log("count2 activeEffect ", activeEffect);
         console.log("count2 is :", observed.count2);
-        console.log("count2 activeEffect >", activeEffect);
     });
-    console.log("count1 activeEffect <", activeEffect);
     console.log("count1 is :", observed.count1);
-    console.log("count1 activeEffect >", activeEffect);
 });
