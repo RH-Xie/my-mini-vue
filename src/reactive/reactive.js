@@ -1,5 +1,5 @@
 import { track, trigger } from "./effect";
-import { hasChanged, isObject } from "../../utils";
+import { hasChanged, isArray, isObject } from "../../utils";
 
 const proxyMap = new WeakMap();
 export function reactive(target) {
@@ -13,13 +13,22 @@ export function reactive(target) {
             if (key === "__isReactive") return true;
             const res = Reflect.get(...arguments);
             track(target, key);
-            return res;
+            // 这种情况下是不能多层代理的，只有一层
+            // return res
+            // 这种情况是不管有没有依赖，都代理
+            // return reactive(res)
+            return isObject(res) ? reactive(res) : res;
         },
         set(target, key, value, receiver) {
+            // 对于数组，保存更新前的length，用于触发
+            let oldLength = target.length;
             const oldValue = target[key];
             const res = Reflect.set(...arguments);
             if (hasChanged(oldValue, value)) {
                 trigger(target, key);
+                if (isArray(target) && hasChanged(oldLength, target.length)) {
+                    trigger(target, "length");
+                }
             }
             return res;
         },
