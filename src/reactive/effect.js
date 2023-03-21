@@ -8,7 +8,7 @@ export function effect(fn) {
             effectStack.push(activeEffect);
             return fn();
         } finally {
-            // 执行完后需要还原，将其释放，防止调取到上一次的引用
+            // 执行完后需要弹栈，更新当前的activeEffect
             effectStack.pop();
             activeEffect = effectStack[effectStack.length - 1];
         }
