@@ -1,6 +1,6 @@
 const effectStack = [];
 let activeEffect;
-export function effect(fn) {
+export function effect(fn, options = {}) {
     const effectFn = () => {
         // 处理用户代码的错误
         try {
@@ -13,7 +13,11 @@ export function effect(fn) {
             activeEffect = effectStack[effectStack.length - 1];
         }
     };
-    effectFn();
+    if (!options.lazy) {
+        // computed是lazy的，而一般effect不lazy
+        effectFn();
+    }
+    effectFn.scheduler = options.scheduler;
     return effectFn;
 }
 const targetMap = new WeakMap();
@@ -37,6 +41,9 @@ export function trigger(target, key) {
     const deps = depsMap.get(key);
     if (!deps) return;
     deps.forEach((effectFn) => {
-        effectFn();
+        // 如果有scheduler，大约就是computed了吧，执行调度程序
+        if (effectFn.scheduler) effectFn.scheduler(effectFn);
+        // 否则才去执行副作用函数
+        else effectFn();
     });
 }

@@ -1,6 +1,14 @@
+import { computed } from "./reactive/computed";
 import { effect } from "./reactive/effect";
 import { reactive } from "./reactive/reactive";
 import { ref } from "./reactive/ref";
+
+// computed
+const num = (window.num = ref(0));
+const c = (window.c = computed(() => {
+    console.log("calculate c.value");
+    return num.value * 2;
+}));
 
 // reactive
 // const observed = (window.observed = reactive({
@@ -15,7 +23,7 @@ import { ref } from "./reactive/ref";
 // });
 
 // ref
-const observed = (window.observed = ref(1));
-effect(() => {
-    console.log("observed, ", observed.value);
-});
+// const observed = (window.observed = ref(1));
+// effect(() => {
+//     console.log("observed, ", observed.value);
+// });
