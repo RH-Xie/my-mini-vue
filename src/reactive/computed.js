@@ -33,6 +33,7 @@ class ComputedImpl {
             // 调度计算，传入一个函数，依赖变化时，将_dirty置为true
             scheduler: () => {
                 // 外部依赖变化
+                // 这里逻辑为什么是这样？
                 if (!this._dirty) {
                     this._dirty = true;
                     // 这个trigger比较特殊

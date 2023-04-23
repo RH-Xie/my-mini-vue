@@ -1,39 +1,27 @@
-import { computed } from "./reactive/computed";
-import { effect } from "./reactive/effect";
-import { reactive } from "./reactive/reactive";
-import { ref } from "./reactive/ref";
+import { render, h, Text, Fragment } from "./runtime";
 
-// computed
-const num = (window.num = ref(0));
-// const c = (window.c = computed(() => {
-//     console.log("calculate c.value");
-//     return num.value * 2;
-// }));
-// Object Mode
-const c = (window.c = computed({
-    get() {
-        console.log("calculate c.value");
-        return num.value * 2;
+const vnode = h(
+    "div",
+    {
+        class: "a b",
+        style: {
+            border: "1px solid",
+            fontSize: "14px",
+        },
+        onClick: () => console.log("点点点"),
+        id: "foo",
+        checked: "",
+        custom: false,
     },
-    set(newValue) {
-        num.value = newValue;
-    },
-}));
-
-// reactive
-// const observed = (window.observed = reactive({
-//     count1: 0,
-//     count2: 10,
-// }));
-// effect(() => {
-//     effect(() => {
-//         console.log("count2 is :", observed.count2);
-//     });
-//     console.log("count1 is :", observed.count1);
-// });
-
-// ref
-// const observed = (window.observed = ref(1));
-// effect(() => {
-//     console.log("observed, ", observed.value);
-// });
+    [
+        h("ul", null, [
+            h("li", { style: { color: "red" } }, 1),
+            h("li", null, 2),
+            h("li", { style: { color: "blue" } }, 3),
+            h(Fragment, null, [h("li", null, "4"), h("li")]),
+            h("li", null, [h(Text, null, "hello world")]),
+        ]),
+    ]
+);
+console.log(vnode, document.body);
+render(vnode, document.body);
